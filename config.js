@@ -8,5 +8,6 @@ module.exports = {
     password: process.env.PASSWORD,
     database: process.env.DATABASE,
     cryptojs_key: process.env.CRYPTOJS_KEY,
-    app_key:process.env.APP_KEY
+    app_key:process.env.APP_KEY,
+    jwt_key:process.env.JWT_KEY,
 };

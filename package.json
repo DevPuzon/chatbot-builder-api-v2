@@ -20,6 +20,7 @@
     "body-parser": "^1.19.0",
     "crypto-js": "^4.0.0",
     "dotenv": "^8.2.0",
+    "jsonwebtoken": "^8.5.1",
     "node-input-validator": "^4.2.1",
     "sqlstring": "^2.3.2",
     "uuid": "^8.3.2"

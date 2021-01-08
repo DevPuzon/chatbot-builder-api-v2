@@ -6,7 +6,8 @@ const
         host: config.host,
         user: config.user,
         password: config.password,
-        database: config.database
+        database: config.database,
+        multipleStatements: true
     })
 
 db.connect(function (err) {
@@ -25,10 +26,12 @@ module.exports = class DBMain{
         return new Promise((resolve,reject)=>{ 
             db.query(sql, function (err, result) {
                 if (err) { 
-                    console.log(err);
-                    reject(err);
+                    // console.log(err);
+                    // reject(err);
+                    // res.status(500).send({error_message:"Something went wrong"});
+                    throw new Error(err);
                 }
-                resolve(result);
+                resolve(JSON.parse(JSON.stringify(result)));
             });
         })
     }
