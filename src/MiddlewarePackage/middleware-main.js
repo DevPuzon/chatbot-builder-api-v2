@@ -29,33 +29,46 @@ module.exports = {
             try{ 
                 var sql = SqlString.format(`select user_id,role from chatbot_builder_v2.User_Tbl where user_id = ?  `,[user_id])
                 var _res = await DBMain.query(sql);
-                const data = _res[0];
-                console.log();
-                console.log( config.jwt_key);
-                const token = jwt.sign(data, config.jwt_key, { expiresIn: '24h'}); 
-                console.log(token);
+                const data = _res[0]; 
+                const token = jwt.sign(data, config.jwt_key, { expiresIn: '15d'});  
                 resolve(token);
-            }catch(err){
-                console.log(err);
+            }catch(err){ 
                 throw new Error(err);
-            }
+            }   
         });
     }, 
+    onCheckProject:async (req,res,next)=>{
+        try{  
+            const q = req.query; 
+            var sql = SqlString.format(`select * from Project where project_id = ?`,[q.project_id])
+            var _res = await DBMain.query(sql);
+            if(_res.length == 0){
+                return res.status(401).send({error_message:"Unauthorized"});
+            }
+            req.projectData = _res[0];
+            next();
+        } catch (err) {  
+            return res.status(401).send({error_message:"Unauthorized"});
+        }
+    },
     onLogout:(token)=>{
         jwtr.destroy(token);
     }, 
-    isUserValid: (req, res, next) => {
+    isUserValid: async(req, res, next) => {
         try{
         const token = req.headers.authorization.split(' ')[1];
         const decoded = jwt.verify(
             token,
             config.jwt_key
-        );
-        console.log(decoded);
+        ); 
+        var sql = SqlString.format(`select user_id from User_Tbl where user_id = ?`,[decoded.user_id])
+        var _res = await DBMain.query(sql); 
+        if(_res.length ==0){
+            return res.status(401).send({error_message:"Unauthorized"});
+        } 
         req.userData = decoded;
         next();
-        } catch (err) { 
-            console.log(err);
+        } catch (err) {  
             return res.status(401).send({error_message:"Unauthorized"});
         }
     } ,
@@ -65,12 +78,10 @@ module.exports = {
         const decoded = jwt.verify(
             token,
             config.jwt_key
-        );
-        console.log(decoded);
+        ); 
         req.adminData = decoded;
         next();
-        } catch (err) { 
-            console.log(err);
+        } catch (err) {  
             return res.status(401).send({error_message:"Unauthorized"});
         }
     } 

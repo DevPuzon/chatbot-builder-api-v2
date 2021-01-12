@@ -25,13 +25,15 @@ module.exports = class DBMain{
         console.log(sql);
         return new Promise((resolve,reject)=>{ 
             db.query(sql, function (err, result) {
-                if (err) { 
-                    // console.log(err);
-                    // reject(err);
-                    // res.status(500).send({error_message:"Something went wrong"});
+                if (err) {  
+                    setTimeout(() => {
+                      process.exit(0)
+                    }, 1000).unref()  
                     throw new Error(err);
                 }
-                resolve(JSON.parse(JSON.stringify(result)));
+                const _res = JSON.parse(JSON.stringify(result));
+                console.log(_res);
+                resolve(_res);
             });
         })
     }

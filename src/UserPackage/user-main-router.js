@@ -99,7 +99,7 @@ router.post('/email-login',async(req,res)=>{
     console.log(err)
     res.status(500).send({error_message:"Something went wrong"});
   }
-});
+}); 
 
 router.post('/fb-login',async(req,res)=>{
   try{
@@ -159,25 +159,23 @@ router.put('/fb-complete-register',middlewareMain.isUserValid,async(req,res)=>{
   }
 });
 
-router.post('/set-fb-token',middlewareMain.isUserValid,async (req,res)=>{
-  try{
-    const b = req.body;
-    console.log(b);
-    var sql = SqlString.format(`delete  from chatbot_builder_v2.FB_Page where user_id = ?;`, [req.userData.user_id ]);
-    for(let i = 0 ; i < b.length ;i ++){
-      let d = b[i];
-      Object.assign(d,{
-        user_id:req.userData.user_id
-      })
-      sql = sql + SqlString.format(`INSERT INTO chatbot_builder_v2.FB_Page SET ?;`, [d]); 
+router.post('/check-next-proceed',middlewareMain.isUserValid,async (req,res)=>{
+  try{  
+    var sql = SqlString.format(`SELECT * FROM chatbot_builder_v2.User_Tbl where user_id = ? and profession is null`, [req.userData.user_id]);
+    var _res = await DBMain.query(sql);
+    if(_res.length > 0){
+      //success
+      res.send({success:true,is_not_complete:true});
+    }else{ 
+      //success not enough informations
+      res.send({success:true,is_not_complete:false});
     }
-    await DBMain.query(sql);
-
-    res.send({success:true});
+    
   }catch(err){
     console.log(err)
     res.status(500).send({error_message:"Something went wrong"});
   }
 });
+
 
 module.exports = router;
