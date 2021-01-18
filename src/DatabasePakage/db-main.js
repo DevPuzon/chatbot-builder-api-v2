@@ -9,6 +9,13 @@ const
         database: config.database,
         multipleStatements: true
     })
+console.log({
+    host: config.host,
+    user: config.user,
+    password: config.password,
+    database: config.database,
+    multipleStatements: true
+})
 
 db.connect(function (err) {
     if (err) {
