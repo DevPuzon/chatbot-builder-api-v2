@@ -68,12 +68,12 @@ router.get('/getblock/:fb_page_id/:sender_pid', async (req, res) => {
       var type = "default"
       var parameter = JSON.stringify({"block": mini_blocks});
       insertHistory(req.params.sender_pid, req.params.fb_page_id, "getblock", parameter, type).then((value) => {
-        res.send({"response": mini_blocks})
+        res.status(200).send({"response": mini_blocks})
       });
 
       //res.send({"response": mini_blocks});
     } else{
-      res.send({"response": null});
+      res.status(200).send({"response": null});
     }
   } catch(err){
       console.log(err);
