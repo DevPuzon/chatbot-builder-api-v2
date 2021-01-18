@@ -17,7 +17,7 @@ async function insertHistory(sender_pid, fb_page_id, api_call, parameters, type)
   var hr;
   var min;
   var sec;
-  date.setHours(date.getHours() ); //+ 8);
+  date.setHours(date.getHours() + 8);
   if (date.getHours() < 10)
     hr = "0" + date.getHours();
   else
