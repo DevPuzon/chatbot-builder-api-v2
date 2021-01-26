@@ -10,7 +10,8 @@ const
     { v4: uuidv4 } = require('uuid'), 
     CryptoUtil = require('../UtilsPackage/crypt.util'),
     HttpUtil = require('../UtilsPackage/http-util'),
-    SqlString = require('sqlstring');
+    SqlString = require('sqlstring'),
+    nodemailer = require('nodemailer');
 
 
 
