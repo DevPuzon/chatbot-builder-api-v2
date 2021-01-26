@@ -351,7 +351,7 @@ router.get('/getwordmatch/:fb_page_id/:sender_pid/:message', async (req, res) =>
 router.get('/username', (req, res) => {
   var sql = "SELECT lname, name FROM User_Info WHERE sender_pid = '" + req.body.sender_pid + "' AND fb_page_id = '" + req.body.pageID + "'";
   //var query = db.query(sql, (err, results) => {
-  var results = DBMain.query(sql);
+  var results = await DBMain.query(sql);
     if(results.length){
       res.status(200).send({"lastname": results[0].lname, "firstname": results[0].name});
     } else{
