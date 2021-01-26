@@ -43,7 +43,7 @@ async function notifAdmin(pageID, mail_body, model){
   //}
 
   //var query = db.query(sql, (err, results) => {
-  var results = DBMain.query(sql);
+  var results = await DBMain.query(sql);
     if(results.length){
       var emails = "";
       for(let index in results){
