@@ -220,14 +220,14 @@ router.get('/getwordmatch/:fb_page_id/:sender_pid/:message', async (req, res) =>
   var resultProj = await DBMain.query(sqlProj);
   if(resultProj.length){
   var sql = "SELECT * FROM word_matching WHERE project_id = '" + resultProj[0].project_id + "' ORDER BY wm_index, command_index, block_property_index"
-  var result = await DBMain.query(sql);
+  //var result = await DBMain.query(sql);
   //var sql = "SELECT * FROM word_matching WHERE clientID = " + req.params.pageID + " ORDER BY wm_index, command_index, block_property_index"
   var user_possible_words;
   var wm_array = [];
   var commands = [];
   var block_properties = [];
   //var query = db.query(sql, (err, results) => {
-  var results = DBMain.query(sql);
+  var results = await DBMain.query(sql);
     if(results.length){
       for(let count in results){
         if(results[count].wm_index in wm_array){
@@ -272,7 +272,7 @@ router.get('/getwordmatch/:fb_page_id/:sender_pid/:message', async (req, res) =>
         commands = []
       }
       //res.status(200).send({"response": wm_array});
-
+      //console.log("Hey " + wm_array)
       var flag = false;
       var ctype = "";
       var theblock;
@@ -281,9 +281,10 @@ router.get('/getwordmatch/:fb_page_id/:sender_pid/:message', async (req, res) =>
       var block_obj = {};
       var text_obj = {};
       for (var i = 0; i < wm_array.length; i++) {
-        //console.log(wm_array[i].user_possible_words);
+        //console.log("This: " + wm_array);
         if (req.params.message.match(new RegExp("\\b(" + wm_array[i].user_possible_words.join("|") + ")\\b", "gi"))) {
-          response = [];
+          var response = [];
+          //console.log("test")
           for (var j = 0; j < wm_array[i].commands.length; j++) {
             //console.log(wm_array[i].commands[j].command_type);
             if (wm_array[i].commands[j].command_type === undefined) {
