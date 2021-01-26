@@ -219,7 +219,7 @@ router.get('/getwordmatch/:fb_page_id/:sender_pid/:message', async (req, res) =>
   var sqlProj = SqlString.format(`SELECT project_id FROM Project WHERE fb_page_id = ?`, [req.params.fb_page_id]);
   var resultProj = await DBMain.query(sqlProj);
   if(resultProj.length){
-  var sql = "SELECT * FROM word_matching WHERE project_id = " + resultProj[0].project_id + " ORDER BY wm_index, command_index, block_property_index"
+  var sql = "SELECT * FROM word_matching WHERE project_id = '" + resultProj[0].project_id + "' ORDER BY wm_index, command_index, block_property_index"
   var result = await DBMain.query(sql);
   //var sql = "SELECT * FROM word_matching WHERE clientID = " + req.params.pageID + " ORDER BY wm_index, command_index, block_property_index"
   var user_possible_words;
