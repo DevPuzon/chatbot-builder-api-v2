@@ -368,7 +368,7 @@ router.get('/username', async (req, res) => {
 
 
 // Live chat notif to admin
-router.get('/livechatnotif/:pageID/:sender_pid', (req, res) => {
+router.get('/livechatnotif/:pageID/:sender_pid', async (req, res) => {
   var sql = "SELECT name, lname FROM User_Info WHERE sender_pid = '" + req.params.sender_pid + "'";
   //var query = db.query(sql, (err, results) => {
   var results = await DBMain.query(sql)
