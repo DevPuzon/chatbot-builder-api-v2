@@ -86,7 +86,7 @@ router.get('/getblock/:fb_page_id/:sender_pid', async (req, res) => {
 // Get Token by page ID
 router.get('/get_token/:pageID', (req, res) => {
   try{
-    var sql = "SELECT page_access_token FROM pages_info WHERE pageID = '" + req.params.pageID + "'";
+    var sql = "SELECT fb_page_access_token FROM FB_Page WHERE fb_page_id = '" + req.params.pageID + "'";
     var query = db.query(sql, (err, results) => {
       if(results.length){
         res.status(200).send({"page_access_token": results[0].page_access_token});
