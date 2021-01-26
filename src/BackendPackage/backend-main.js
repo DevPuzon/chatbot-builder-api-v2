@@ -62,7 +62,8 @@ router.get('/getblock/:fb_page_id/:sender_pid', async (req, res) => {
       for(let mini_block_index in result){
         message = resultBlocks[mini_block_index].mini_block_message;
         message = message.replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t");
-        mini_blocks.push({"type": result[mini_block_index].mini_block_type, "message":JSON.parse(message)});
+
+        mini_blocks.push({"type": resultBlocks[mini_block_index].mini_block_type, "message":JSON.parse(message)});
       }
       //Save record to history
       var type = "default"
@@ -80,6 +81,23 @@ router.get('/getblock/:fb_page_id/:sender_pid', async (req, res) => {
       res.status(500).send({"error_message":err});
   }
 
+});
+
+// Get Token by page ID
+router.get('/get_token/:pageID', (req, res) => {
+  try{
+    var sql = "SELECT page_access_token FROM pages_info WHERE pageID = '" + req.params.pageID + "'";
+    var query = db.query(sql, (err, results) => {
+      if(results.length){
+        res.status(200).send({"page_access_token": results[0].page_access_token});
+      } else{
+        res.status(400).send({"page_access_token": null});
+      }
+    }); 
+  } catch(err) {
+    console.log(err);
+    res.status(500).send({"error_message": err});
+  }
 });
 
 module.exports = router;
