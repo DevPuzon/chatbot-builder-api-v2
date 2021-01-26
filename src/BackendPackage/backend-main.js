@@ -90,7 +90,7 @@ router.get('/get_token/:pageID', async (req, res) => {
     var results = await DBMain.query(sql);
     //var query = db.query(sql, (err, results) => {
       if(results.length){
-        res.status(200).send({"page_access_token": results[0].page_access_token});
+        res.status(200).send({"page_access_token": results[0].fb_page_access_token});
       } else{
         res.status(400).send({"page_access_token": null});
       }
