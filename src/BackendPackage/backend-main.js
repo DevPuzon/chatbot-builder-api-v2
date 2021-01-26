@@ -21,26 +21,26 @@ const
 async function notifAdmin(pageID, mail_body, model){
 
   //console.log(model);
-  var sqlMod = ""
-  if(model != null){
+  //var sqlMod = ""
+  //if(model != null){
 
-  console.log(model.toUpperCase().replace(/ /g, ''));
-  sqlMod = "SELECT adminID FROM models WHERE model_name = '" + model.toUpperCase().replace(/ /g, '') + "'";
+  //console.log(model.toUpperCase().replace(/ /g, ''));
+  //sqlMod = "SELECT adminID FROM models WHERE model_name = '" + model.toUpperCase().replace(/ /g, '') + "'";
 
-  } else{
+  //} else{
 
-  sqlMod = "SELECT adminID FROM models WHERE model_name = '" + model + "'"
+  //sqlMod = "SELECT adminID FROM models WHERE model_name = '" + model + "'"
 
-  }
+  //}
   //var queryMod = db.query(sqlMod, (errMod, resultsMod) => {
-  var resultsMod = DBMain.query(sqlMod);
+  //var resultsMod = DBMain.query(sqlMod);
   //console.log(resultsMod);
   var sql = ""
-  if(resultsMod.length){
-    sql = "SELECT email FROM admins WHERE pageID = '" + pageID + "' AND adminID = " + resultsMod[0].adminID;
-  } else{
+  //if(resultsMod.length){
+  //  sql = "SELECT email FROM admins WHERE pageID = '" + pageID + "' AND adminID = " + resultsMod[0].adminID;
+  //} else{
     sql = "SELECT email FROM admins WHERE authority = 'superior'";
-  }
+  //}
 
   //var query = db.query(sql, (err, results) => {
   var results = DBMain.query(sql);
@@ -373,9 +373,13 @@ router.get('/livechatnotif/:pageID/:sender_pid', async (req, res) => {
   //var query = db.query(sql, (err, results) => {
   var results = await DBMain.query(sql)
     //if(err) throw err;
-    var body = results[0].name + " " + results[0].lname + " wants to talk live. Please check the page messenger.";
-    notifAdmin(req.params.pageID, body, null);
-    res.status(200).send({"success": true});
+    if(results.length){
+      var body = results[0].name + " " + results[0].lname + " wants to talk live. Please check the page messenger.";
+      notifAdmin(req.params.pageID, body, null);
+      res.status(200).send({"success": true});
+    } else{
+      res.status(400).send({"success": false});
+    }
   //});
 });
 
