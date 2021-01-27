@@ -1,7 +1,6 @@
 'use strict'
  
-const 
-	express = require('express'),
+const express = require('express'),
     app = express(), 
     middlewareMain = require('./src/MiddlewarePackage/middleware-main'),
     user = require('./src/UserPackage/user-main-router'),
@@ -10,6 +9,7 @@ const
     template = require('./src/TemplatePackage/template-main'),
     debug = require('./src/AutomationPackage/debug-automation'),
     fbpage = require('./src/FBPagePackage/fb-page-main'),
+    backend = require('./src/BackendPackage/backend-main'),
     config = require('./config'),
     bodyParser = require('body-parser'),
     cors = require('cors')
@@ -25,6 +25,7 @@ app.use('/automation',middlewareMain.isUserValid,middlewareMain.onCheckProject,a
 app.use('/debug-automation',middlewareMain.isUserValid,middlewareMain.onCheckProject,debug);
 app.use('/template',middlewareMain.isUserValid,template);
 app.use('/fbpage',fbpage);
+app.use('/backend', backend);
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
