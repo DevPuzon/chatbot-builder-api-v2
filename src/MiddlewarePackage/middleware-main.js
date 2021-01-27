@@ -61,12 +61,12 @@ module.exports = {
             token,
             config.jwt_key
         ); 
-        var sql = SqlString.format(`select user_id from User_Tbl where user_id = ?`,[decoded.user_id])
+        var sql = SqlString.format(`select * from User_Tbl where user_id = ? and role = ?`,[decoded.user_id,decoded.role])
         var _res = await DBMain.query(sql); 
         if(_res.length ==0){
             return res.status(401).send({error_message:"Unauthorized"});
         } 
-        req.userData = decoded;
+        req.userData = _res[0];
         next();
         } catch (err) {  
             return res.status(401).send({error_message:"Unauthorized"});

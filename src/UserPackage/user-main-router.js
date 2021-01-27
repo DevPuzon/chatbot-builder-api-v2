@@ -81,17 +81,18 @@ router.post('/email-login',async(req,res)=>{
     console.log(b);
     b.password = CryptoUtil.decryptData(b.password);
     console.log(b.password);
-    var sql = SqlString.format(`select password from chatbot_builder_v2.User_Tbl where email = ? and provider = 'email'`, [b.email]);
+    var sql = SqlString.format(`select user_id,password from chatbot_builder_v2.User_Tbl where email = ? and provider = 'email' or provider = 'email+facebook'`, [b.email]);
     const _res_count_acc = await DBMain.query(sql);
     
     if(_res_count_acc.length <= 0){ 
       res.status(401).send({error_message:"Email and password doesn't match."});
       return;
     }
-    console.log(_res_count_acc[0]);
+    const user_id = _res_count_acc[0].user_id; 
+    const token = await middlewareMain.onLogin(user_id);
     if(CryptoUtil.decryptData(_res_count_acc[0].password) == b.password){
       //success
-      res.send({success:true});
+      res.send({success:true,token:token});
     }else{ 
       res.status(401).send({error_message:"Email and password doesn't match."});
     }
@@ -110,7 +111,7 @@ router.post('/fb-login',async(req,res)=>{
     })
     let user_id = b.user_id;
     console.log(b);
-    var sql = SqlString.format(`select user_id from chatbot_builder_v2.User_Tbl where email = ? and social_user_id =  ?`, [b.email,b.social_user_id]);
+    var sql = SqlString.format(`select user_id from chatbot_builder_v2.User_Tbl where social_user_id =  ?`, [b.social_user_id]);
     var _res = await DBMain.query(sql);
     if(_res.length <= 0){
       //Create new account
@@ -126,10 +127,10 @@ router.post('/fb-login',async(req,res)=>{
     var _res = await DBMain.query(sql);
     if(_res.length > 0){
       //success
-      res.send({success:true,is_not_complete:true,user_id,token:token});
+      res.send({success:true, is_not_complete:true,token:token});
     }else{ 
       //success not enough informations
-      res.send({success:true,is_not_complete:false,user_id,token:token});
+      res.send({success:true,is_not_complete:false,token:token});
     }
   }catch(err){
     console.log(err)

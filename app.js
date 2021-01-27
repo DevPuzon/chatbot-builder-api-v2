@@ -23,7 +23,7 @@ app.use('/user',user);
 app.use('/project',middlewareMain.isUserValid,project);
 app.use('/automation',middlewareMain.isUserValid,middlewareMain.onCheckProject,automation);
 app.use('/debug-automation',middlewareMain.isUserValid,middlewareMain.onCheckProject,debug);
-app.use('/template',middlewareMain.isUserValid,middlewareMain.onCheckProject,template);
+app.use('/template',middlewareMain.isUserValid,template);
 app.use('/fbpage',fbpage);
 app.use('/backend', backend);
 
