@@ -89,7 +89,7 @@ router.post('/email-login',async(req,res)=>{
       return;
     }
     const user_id = _res_count_acc[0].user_id; 
-    const token = await middlewareMain.onLogin(user_id);
+    const token = await middlewareMain.onLogin(user_id,res);
     if(CryptoUtil.decryptData(_res_count_acc[0].password) == b.password){
       //success
       res.send({success:true,token:token});
@@ -120,7 +120,7 @@ router.post('/fb-login',async(req,res)=>{
     } else{
       user_id =_res[0].user_id;
     }
-    const token = await middlewareMain.onLogin(user_id);
+    const token = await middlewareMain.onLogin(user_id,res);
     console.log(token);
     //On Fb Login 
     var sql = SqlString.format(`SELECT * FROM chatbot_builder_v2.User_Tbl where user_id = ? and profession is null`, [user_id]);

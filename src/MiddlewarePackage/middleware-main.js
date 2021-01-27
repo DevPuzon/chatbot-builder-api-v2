@@ -24,7 +24,7 @@ module.exports = {
 //     }
 //   },
   
-    onLogin:(user_id)=>{
+    onLogin:(user_id,res)=>{
         return new Promise(async (resolve)=>{
             try{ 
                 var sql = SqlString.format(`select user_id,role from chatbot_builder_v2.User_Tbl where user_id = ?  `,[user_id])
