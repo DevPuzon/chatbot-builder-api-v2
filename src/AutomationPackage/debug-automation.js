@@ -25,7 +25,7 @@ router.post('/deploy', async (req, res) => {
         var sqlDel  = `DELETE FROM chatbot_res WHERE project_id = '${req.projectData.project_id}';` ;
     //   var queryDel = db.query(sqlDel, (errDel, resultsDel) => {
     //   }); //end of queryDel 
-        await DBMain.query(sqlDel);
+        await DBMain.query(sqlDel,res);
         var sql = "INSERT INTO chatbot_res(chatbot_res_id, project_id, block_index, block_name, mini_block_index, mini_block_type, mini_block_message) VALUES";
         for(let block_index in req.body.blocks){
             block_name = req.body.blocks[block_index].block_name;
@@ -36,7 +36,7 @@ router.post('/deploy', async (req, res) => {
             }
         }
         sql = sql.slice(0, sql.length - 1);
-        await DBMain.query(sql);
+        await DBMain.query(sql,res);
         // var query = db.query(sql, (err, results) => {
         // }); // end of sql
         
@@ -44,7 +44,7 @@ router.post('/deploy', async (req, res) => {
             var sqlDel2 = `DELETE FROM word_matching WHERE project_id = '${req.projectData.project_id }';`;
             // var queryDel2 = db.query(sqlDel2, (errDel2, resultsDel2) => {
             // }); //end of queryDel2
-            await DBMain.query(sqlDel2); 
+            await DBMain.query(sqlDel2,res); 
             var sql2 = "INSERT INTO word_matching(wmID, project_id, wm_index, user_possible_words, command_index, command_type, text_message, block_property_index, block_property_element) VALUES";
             var upw;
             var type2;
@@ -81,12 +81,12 @@ router.post('/deploy', async (req, res) => {
             //console.log(sql2);
             // var query2 = db.query(sql2, (err2, results2) => {
             // }); //end of query2
-            await DBMain.query(sql2);
+            await DBMain.query(sql2,res);
                 
             var sqlSel = "SELECT * FROM Project_version WHERE version_id = '" + req.projectData.version_id + "'";
             // var querySel = db.query(sqlSel, (err, results) => {
             // }); 
-            var results = await DBMain.query(sqlSel); 
+            var results = await DBMain.query(sqlSel,res); 
             var sqlPutVer;
             var queryPutVer;
             if(results.length){
@@ -104,12 +104,12 @@ router.post('/deploy', async (req, res) => {
                 // }); 
                 res.status(200).send({"success": true, "current_version": "0"});
             } 
-            await DBMain.query(sqlPutVer); 
+            await DBMain.query(sqlPutVer,res); 
         } else{ 
             var sqlSel = "SELECT * FROM Project_version WHERE version_id = '" + req.projectData.version_id + "'";
             // var querySel = db.query(sqlSel, (err, results) => {
             // }); 
-            var results = await DBMain.query(sqlSel);
+            var results = await DBMain.query(sqlSel,res);
             
             var sqlPutVer;
             var queryPutVer;
@@ -128,7 +128,7 @@ router.post('/deploy', async (req, res) => {
                 // });
                 res.status(200).send({"success": true, "current_version": "0"});
             }
-            await DBMain.query(sqlPutVer);
+            await DBMain.query(sqlPutVer,res);
         } 
         } else{
         res.status(200).send({"success": true});
@@ -143,7 +143,7 @@ router.get('/getallblocks',async (req,res)=>{
         var blocks = [];
         var wordmatches = [];
         var sql = "SELECT * FROM chatbot_res WHERE project_id = '" + req.projectData.project_id + "' ORDER BY block_index, mini_block_index ASC"; 
-        var results = await DBMain.query(sql); 
+        var results = await DBMain.query(sql,res); 
         var message;
         if(results.length){ 
             for(let row in results){
@@ -164,7 +164,7 @@ router.get('/getallblocks',async (req,res)=>{
         var user_possible_words; 
         var commands = [];
         var block_properties = [];
-        var results = await DBMain.query(sql);
+        var results = await DBMain.query(sql,res);
          
         if(results.length){ 
             for(let count in results){ 

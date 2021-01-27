@@ -19,7 +19,7 @@ const
 
 // Send notification to admins
 
-async function notifAdmin(pageID, mail_body, model){
+async function notifAdmin(pageID, mail_body, model,res){
 
   //console.log(model);
   //var sqlMod = ""
@@ -44,7 +44,7 @@ async function notifAdmin(pageID, mail_body, model){
   //}
 
   //var query = db.query(sql, (err, results) => {
-  var results = await DBMain.query(sql);
+  var results = await DBMain.query(sql,res);
     if(results.length){
       var emails = "";
       for(let index in results){
@@ -88,7 +88,7 @@ async function notifAdmin(pageID, mail_body, model){
 
 
 
-async function insertHistory(sender_pid, fb_page_id, api_call, parameters, type) {
+async function insertHistory(sender_pid, fb_page_id, api_call, parameters, type,res) {
   var date = new Date();
   var hr;
   var min;
@@ -112,7 +112,7 @@ async function insertHistory(sender_pid, fb_page_id, api_call, parameters, type)
   console.log(regTime)
 
   var sqlHis = "INSERT INTO History(sender_pid, fb_page_id, api_call, parameters, type, datetime) VALUES('" + sender_pid + "','" + fb_page_id + "','" + api_call + "','" + parameters + "','" + type + "','" + regTime + "')"
-  var sqlHisQuery = await DBMain.query(sqlHis);//db.query(sqlHis, (err, results) => {
+  var sqlHisQuery = await DBMain.query(sqlHis,res);//db.query(sqlHis, (err, results) => {
   //if(err){
   //  console.log(err);
       //res.status(400).send({"error_message": err});
@@ -126,7 +126,7 @@ router.get('/getblock/:fb_page_id/:sender_pid', async (req, res) => {
   try{
 
     var sql = SqlString.format(`SELECT project_id FROM Project WHERE fb_page_id = ?`, [req.params.fb_page_id]);
-    var result = await DBMain.query(sql);
+    var result = await DBMain.query(sql,res);
 
     var sqlBlocks = SqlString.format(`SELECT * FROM chatbot_res WHERE project_id = ? AND block_name = ? ORDER BY mini_block_index ASC`, [result[0].project_id, req.body.block_name]);
     var resultBlocks = await DBMain.query(sqlBlocks);
@@ -144,7 +144,7 @@ router.get('/getblock/:fb_page_id/:sender_pid', async (req, res) => {
       //Save record to history
       var type = "default"
       var parameter = JSON.stringify({"block": mini_blocks});
-      insertHistory(req.params.sender_pid, req.params.fb_page_id, "getblock", parameter, type).then((value) => {
+      insertHistory(req.params.sender_pid, req.params.fb_page_id, "getblock", parameter, type,res).then((value) => {
         res.status(200).send({"response": mini_blocks})
       });
 
@@ -163,7 +163,7 @@ router.get('/getblock/:fb_page_id/:sender_pid', async (req, res) => {
 router.get('/get_token/:pageID', async (req, res) => {
   try{
     var sql = "SELECT fb_page_access_token FROM FB_Page WHERE fb_page_id = '" + req.params.pageID + "'";
-    var results = await DBMain.query(sql);
+    var results = await DBMain.query(sql,res);
     //var query = db.query(sql, (err, results) => {
       if(results.length){
         res.status(200).send({"page_access_token": results[0].fb_page_access_token});
@@ -214,21 +214,21 @@ router.get('/getwordmatch/:fb_page_id/:sender_pid/:message', async (req, res) =>
     type = "default";
   }
   //console.log(type);
-  var hisRet = await insertHistory(req.params.sender_pid, req.params.fb_page_id, "getwordmatch", JSON.stringify({"word": req.params.message}), type); //.then((value) => {
+  var hisRet = await insertHistory(req.params.sender_pid, req.params.fb_page_id, "getwordmatch", JSON.stringify({"word": req.params.message},res), type); //.then((value) => {
 
 
   var sqlProj = SqlString.format(`SELECT project_id FROM Project WHERE fb_page_id = ?`, [req.params.fb_page_id]);
-  var resultProj = await DBMain.query(sqlProj);
+  var resultProj = await DBMain.query(sqlProj,res);
   if(resultProj.length){
   var sql = "SELECT * FROM word_matching WHERE project_id = '" + resultProj[0].project_id + "' ORDER BY wm_index, command_index, block_property_index"
-  //var result = await DBMain.query(sql);
+  //var result = await DBMain.query(sql,res);
   //var sql = "SELECT * FROM word_matching WHERE clientID = " + req.params.pageID + " ORDER BY wm_index, command_index, block_property_index"
   var user_possible_words;
   var wm_array = [];
   var commands = [];
   var block_properties = [];
   //var query = db.query(sql, (err, results) => {
-  var results = await DBMain.query(sql);
+  var results = await DBMain.query(sql,res);
     if(results.length){
       for(let count in results){
         if(results[count].wm_index in wm_array){
@@ -352,7 +352,7 @@ router.get('/getwordmatch/:fb_page_id/:sender_pid/:message', async (req, res) =>
 router.get('/username', async (req, res) => {
   var sql = "SELECT lname, name FROM User_Info WHERE sender_pid = '" + req.body.sender_pid + "' AND fb_page_id = '" + req.body.pageID + "'";
   //var query = db.query(sql, (err, results) => {
-  var results = await DBMain.query(sql);
+  var results = await DBMain.query(sql,res);
     if(results.length){
       res.status(200).send({"lastname": results[0].lname, "firstname": results[0].name});
     } else{
@@ -372,11 +372,11 @@ router.get('/username', async (req, res) => {
 router.get('/livechatnotif/:pageID/:sender_pid', async (req, res) => {
   var sql = "SELECT name, lname FROM User_Info WHERE sender_pid = '" + req.params.sender_pid + "'";
   //var query = db.query(sql, (err, results) => {
-  var results = await DBMain.query(sql)
+  var results = await DBMain.query(sql,res)
     //if(err) throw err;
     if(results.length){
       var body = results[0].name + " " + results[0].lname + " wants to talk live. Please check the page messenger.";
-      notifAdmin(req.params.pageID, body, null);
+      notifAdmin(req.params.pageID, body, null,res);
       res.status(200).send({"success": true});
     } else{
       res.status(400).send({"success": false});
