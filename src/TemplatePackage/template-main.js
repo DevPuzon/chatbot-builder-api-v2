@@ -21,13 +21,13 @@ router.post('/',middlewareMain.onCheckProject,async (req,res)=>{
             template_id:uuidv4()
         })
         var sql = SqlString.format(`INSERT INTO chatbot_builder_v2.Template set ?`,[b]);
-        await DBMain.query(sql);
+        await DBMain.query(sql,res);
 
         var sql = SqlString.format(`SELECT template.template_id, project.project_id,project.user_id,project.name,project.fb_page_id,project.proj_img,
         project.updated_at,fbpage.name as fbpage_name,fbpage.fb_page_id as fbpage_id,fbpage.page_img as fbpage_img FROM Project as project left join FB_Page as fbpage on project.fb_page_id =
         fbpage.fb_page_id left join Template as template on template.project_id = project.project_id 
         where project.project_id = ? ;`,[req.projectData.project_id]);
-        var _res = await DBMain.query(sql);  
+        var _res = await DBMain.query(sql,res);  
         res.send(_res[0]);
 
     }catch(err){
@@ -41,13 +41,13 @@ router.put('/',middlewareMain.onCheckProject,async (req,res)=>{
         const b =req.body;
         const q =req.query;
         var sql = SqlString.format(`Update chatbot_builder_v2.Template set ? where template_id = ? and  project_id = ?`,[b,q.template_id,q.project_id]);
-        await DBMain.query(sql);
+        await DBMain.query(sql,res);
         
         var sql = SqlString.format(`SELECT template.template_id, project.project_id,project.user_id,project.name,project.fb_page_id,project.proj_img,
         project.updated_at,fbpage.name as fbpage_name,fbpage.fb_page_id as fbpage_id,fbpage.page_img as fbpage_img FROM Project as project left join FB_Page as fbpage on project.fb_page_id =
         fbpage.fb_page_id left join Template as template on template.project_id = project.project_id 
         where project.project_id = ? ;`,[req.projectData.project_id]);
-        var _res = await DBMain.query(sql); 
+        var _res = await DBMain.query(sql,res); 
 
         res.send(_res[0]);
     }catch(err){
@@ -60,7 +60,7 @@ router.get('/',middlewareMain.onCheckProject,async (req,res)=>{
     try{  
         const q =req.query;
         var sql = SqlString.format(`select * from Template where template_id = ? ;`,[q.template_id]);
-        var _res = await DBMain.query(sql);
+        var _res = await DBMain.query(sql,res);
         res.send(_res[0]);
     }catch(err){
         console.log(err)
@@ -75,7 +75,7 @@ router.get('/',middlewareMain.onCheckProject,async (req,res)=>{
 //         var data ;
 //         if(!q.page){ 
 //             var sql = SqlString.format(`select * from Template where is_public = 1 order by updated_at desc limit ${limit} ;` );
-//             var _res = await DBMain.query(sql);
+//             var _res = await DBMain.query(sql,res);
 //             console.log(_res);
 //             data ={
 //                 data :_res, 
@@ -83,7 +83,7 @@ router.get('/',middlewareMain.onCheckProject,async (req,res)=>{
 //             }
 //         }else{
 //             var sql = SqlString.format(`select * from Template where is_public = 1  order by updated_at desc limit ${limit} offset ${q.page*limit} ;`);
-//             var _res = await DBMain.query(sql);
+//             var _res = await DBMain.query(sql,res);
 //             console.log(parseInt(q.page)-1  == -1? 0: parseInt(q.page)-1); 
 //             data ={
 //                 data :_res,
@@ -102,7 +102,7 @@ router.get('/',middlewareMain.onCheckProject,async (req,res)=>{
 router.get('/list',async (req,res)=>{
     try{  
         const limit = 50;
-        const q =req.query;
+        const q = req.query;
         var data ;
         if(q.sort_type == 'all'){
             if(!q.page){ 
@@ -111,7 +111,7 @@ router.get('/list',async (req,res)=>{
                 left join Project as project on project.project_id = template.project_id 
                  left join FB_Page as fbpage on fbpage.fb_page_id = project.fb_page_id
                   where template.is_public = 1 order by template.updated_at desc limit ${limit} ;` );
-                var _res = await DBMain.query(sql);
+                var _res = await DBMain.query(sql,res);
                 console.log(_res);
                 data ={
                     data :_res, 
@@ -123,7 +123,7 @@ router.get('/list',async (req,res)=>{
                 left join Project as project on project.project_id = template.project_id 
                  left join FB_Page as fbpage on fbpage.fb_page_id = project.fb_page_id
                   where template.is_public = 1  order by template.updated_at desc limit ${limit} offset ${q.page*limit} ;`);
-                var _res = await DBMain.query(sql); 
+                var _res = await DBMain.query(sql,res); 
                 data ={
                     data :_res,
                     prevPage:`template/list?page=${(parseInt(q.page)-1  == -1? 0: parseInt(q.page)-1)}&sort_type=${q.sort_type}`,
@@ -138,7 +138,7 @@ router.get('/list',async (req,res)=>{
                 left join Project as project on project.project_id = template.project_id 
                  left join FB_Page as fbpage on fbpage.fb_page_id = project.fb_page_id
                   where template.is_public = 1 and template.type  = ? order by template.updated_at desc limit ${limit} ;`,[q.sort_type] );
-                var _res = await DBMain.query(sql);
+                var _res = await DBMain.query(sql,res);
                 console.log(_res);
                 data ={
                     data :_res, 
@@ -150,7 +150,7 @@ router.get('/list',async (req,res)=>{
                 left join Project as project on project.project_id = template.project_id 
                  left join FB_Page as fbpage on fbpage.fb_page_id = project.fb_page_id
                   where template.is_public = 1  and template.type  = ? order by template.updated_at desc limit ${limit} offset ${q.page*limit} ;`,[q.sort_type] );
-                var _res = await DBMain.query(sql); 
+                var _res = await DBMain.query(sql,res); 
                 data ={
                     data :_res,
                     prevPage:`template/list?page=${(parseInt(q.page)-1  == -1? 0: parseInt(q.page)-1)}&sort_type=${q.sort_type}`,
@@ -196,7 +196,7 @@ router.post('/use',async (req,res)=>{
         INSERT INTO word_matching (wmID,wm_index,user_possible_words,command_index,command_type,text_message,block_property_index,block_property_element,project_id)
         SELECT UUID(),wm_index,user_possible_words,command_index,command_type,text_message,block_property_index,block_property_element,concat(?)
         FROM word_matching WHERE project_id =?;`,[b.project_id,q.project_id] ); 
-        await DBMain.query(sql);
+        await DBMain.query(sql,res);
         res.send(b);
     }catch(err){
         console.log(err)

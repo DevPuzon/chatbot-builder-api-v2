@@ -17,7 +17,7 @@ const
 router.get('/get-project-version',async (req,res)=>{  
     try{    
         var sql = SqlString.format(`select project.project_id , project_version.current_version as current_version from Project as project left join Project_version as project_version on project_version.version_id = project.version_id where project.project_id = ?;`,[req.projectData.project_id]);
-        var _res = await DBMain.query(sql);
+        var _res = await DBMain.query(sql,res);
         res.send(_res[0]); 
     }catch(err){ 
         res.status(500).send({error_message:"Something went wrong"});

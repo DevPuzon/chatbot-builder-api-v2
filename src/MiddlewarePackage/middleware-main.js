@@ -28,7 +28,7 @@ module.exports = {
         return new Promise(async (resolve)=>{
             try{ 
                 var sql = SqlString.format(`select user_id,role from chatbot_builder_v2.User_Tbl where user_id = ?  `,[user_id])
-                var _res = await DBMain.query(sql);
+                var _res = await DBMain.query(sql,res);
                 const data = _res[0]; 
                 const token = jwt.sign(data, config.jwt_key, { expiresIn: '15d'});  
                 resolve(token);
@@ -41,7 +41,7 @@ module.exports = {
         try{  
             const q = req.query; 
             var sql = SqlString.format(`select * from Project where project_id = ?`,[q.project_id])
-            var _res = await DBMain.query(sql);
+            var _res = await DBMain.query(sql,res);
             if(_res.length == 0){
                 return res.status(401).send({error_message:"Unauthorized"});
             }
@@ -62,7 +62,7 @@ module.exports = {
             config.jwt_key
         ); 
         var sql = SqlString.format(`select * from User_Tbl where user_id = ? and role = ?`,[decoded.user_id,decoded.role])
-        var _res = await DBMain.query(sql); 
+        var _res = await DBMain.query(sql,res); 
         if(_res.length ==0){
             return res.status(401).send({error_message:"Unauthorized"});
         } 

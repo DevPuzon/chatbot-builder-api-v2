@@ -22,14 +22,12 @@ module.exports = class DBMain{
 
     }
 
-    static query(sql){
+    static query(sql,res){
         console.log(sql);
         return new Promise((resolve,reject)=>{ 
             db.query(sql, function (err, result) {
-                if (err) {  
-                    setTimeout(() => {
-                      process.exit(0)
-                    }, 1000).unref()  
+                if (err) {    
+                    res.status(500).send({error_message:"Something went wrong"});
                     throw new Error(err);
                 }
                 const _res = JSON.parse(JSON.stringify(result)); 
