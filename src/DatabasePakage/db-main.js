@@ -9,12 +9,13 @@ const
         database: config.database,
         multipleStatements: true
     })
-
+    
 db.connect(function (err) {
     if (err) {
         console.log(err.message);
+    }else{
+        console.log("DATABASE CONNECTED!");
     }
-    console.log("DATABASE CONNECTED!");
 });
 module.exports = class DBMain{
     constructor(){
@@ -31,8 +32,7 @@ module.exports = class DBMain{
                     }, 1000).unref()  
                     throw new Error(err);
                 }
-                const _res = JSON.parse(JSON.stringify(result));
-                console.log(_res);
+                const _res = JSON.parse(JSON.stringify(result)); 
                 resolve(_res);
             });
         })
