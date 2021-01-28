@@ -127,15 +127,16 @@ router.get('/getblock/:fb_page_id/:sender_pid', async (req, res) => {
 
     var sql = SqlString.format(`SELECT project_id FROM Project WHERE fb_page_id = ?`, [req.params.fb_page_id]);
     var result = await DBMain.query(sql,res);
-
+     console.log(result);
+    console.log(req.params.fb_page_id);
     var sqlBlocks = SqlString.format(`SELECT * FROM chatbot_res WHERE project_id = ? AND block_name = ? ORDER BY mini_block_index ASC`, [result[0].project_id, req.body.block_name]);
     var resultBlocks = await DBMain.query(sqlBlocks);
-
+     console.log(resultBlocks);
     var message;
 
     if(resultBlocks.length){
       var mini_blocks = [];
-      for(let mini_block_index in result){
+      for(let mini_block_index in resultBlocks){
         message = resultBlocks[mini_block_index].mini_block_message;
         message = message.replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t");
 
@@ -145,7 +146,8 @@ router.get('/getblock/:fb_page_id/:sender_pid', async (req, res) => {
       var type = "default"
       var parameter = JSON.stringify({"block": mini_blocks});
       insertHistory(req.params.sender_pid, req.params.fb_page_id, "getblock", parameter, type,res).then((value) => {
-        res.status(200).send({"response": mini_blocks})
+        console.log(JSON.stringify(mini_blocks));
+	res.status(200).send({"response": mini_blocks})
       });
 
       //res.send({"response": mini_blocks});

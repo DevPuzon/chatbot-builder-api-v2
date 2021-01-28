@@ -28,7 +28,7 @@ module.exports = class DBMain{
             db.query(sql, function (err, result) {
                 if (err) {    
                     res.status(500).send({error_message:"Something went wrong"});
-                    throw new Error(err);
+                    reject({});
                 }
                 const _res = JSON.parse(JSON.stringify(result)); 
                 resolve(_res);
