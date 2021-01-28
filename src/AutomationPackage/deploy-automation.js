@@ -21,66 +21,69 @@ router.post('/deploy', async (req, res) => {
         var type;
         var message; 
 
-        if(req.body.blocks.length){  
-            var sql  = `DELETE FROM chatbot_res WHERE project_id = '${req.projectData.project_id}';` ;
-        //   var queryDel = db.query(sqlDel, (errDel, resultsDel) => {
-        //   }); //end of queryDel 
-            // await DBMain.query(sqlDel,res);
-            sql = sql+ "INSERT INTO chatbot_res(chatbot_res_id, project_id, block_index, block_name, mini_block_index, mini_block_type, mini_block_message) VALUES";
-            for(let block_index in req.body.blocks){
-                block_name = req.body.blocks[block_index].block_name;
-                for(let miniblock_index in req.body.blocks[block_index].mini_blocks){
-                    type = req.body.blocks[block_index].mini_blocks[miniblock_index].type;
-                    message = JSON.stringify(req.body.blocks[block_index].mini_blocks[miniblock_index].message); 
-                    sql += "('" + uuidv4() + "','" + req.projectData.project_id + "'," + block_index + "," + SqlString.escape(block_name) + "," + miniblock_index + ",'" + type + "'," + SqlString.escape(message) + "),";
-                }
+        if(req.body.blocks.length){
+        var sqlDel  = `DELETE FROM chatbot_res_dep WHERE project_id = '${req.projectData.project_id}';` ;
+    //   var queryDel = db.query(sqlDel, (errDel, resultsDel) => {
+    //   }); //end of queryDel 
+        await DBMain.query(sqlDel,res);
+        var sql = "INSERT INTO chatbot_res_dep(chatbot_res_id, project_id, block_index, block_name, mini_block_index, mini_block_type, mini_block_message) VALUES";
+        for(let block_index in req.body.blocks){
+            block_name = req.body.blocks[block_index].block_name;
+            for(let miniblock_index in req.body.blocks[block_index].mini_blocks){
+                type = req.body.blocks[block_index].mini_blocks[miniblock_index].type;
+                message = JSON.stringify(req.body.blocks[block_index].mini_blocks[miniblock_index].message); 
+                sql += "('" + uuidv4() + "','" + req.projectData.project_id + "'," + block_index + ",'" + block_name + "'," + miniblock_index + ",'" + type + "','" + message + "'),";
             }
-            sql = sql.slice(0, sql.length - 1);
-            await DBMain.query(sql,res);
-            // var query = db.query(sql, (err, results) => {
-            // }); // end of sql
-            
+        }
+        sql = sql.slice(0, sql.length - 1);
+        await DBMain.query(sql,res);
+        // var query = db.query(sql, (err, results) => {
+        // }); // end of sql
+        
         if(req.body.word_matches.length){
-            var sql = `DELETE FROM word_matching WHERE project_id = '${req.projectData.project_id }';`;
+            var sqlDel2 = `DELETE FROM word_matching_dep WHERE project_id = '${req.projectData.project_id }';`;
             // var queryDel2 = db.query(sqlDel2, (errDel2, resultsDel2) => {
             // }); //end of queryDel2
-            // await DBMain.query(sqlDel2,res); 
-            sql = sql + "INSERT INTO word_matching(wmID, project_id, wm_index, user_possible_words, command_index, command_type, text_message, block_property_index, block_property_element) VALUES";
+            await DBMain.query(sqlDel2,res); 
+            var sql2 = "INSERT INTO word_matching_dep(wmID, project_id, wm_index, user_possible_words, command_index, command_type, text_message, block_property_index, block_property_element) VALUES";
             var upw;
             var type2;
             var text_message;
             var block_property_element;
-            for(let wm_index in req.body.word_matches){ 
+            for(let wm_index in req.body.word_matches){
+                console.log('for(let wm_index in req.body.word_matches){');
                 //if(req.body.word_matches[wm_index].commands.length > 0){
-                upw = JSON.stringify({"upw_array": req.body.word_matches[wm_index].user_possible_words}); 
+                upw = JSON.stringify({"upw_array": req.body.word_matches[wm_index].user_possible_words});
+                console.log(upw);
                 if(req.body.word_matches[wm_index].commands.length > 0){
                     for(let command_index in req.body.word_matches[wm_index].commands){
                         if(req.body.word_matches[wm_index].commands[command_index].command_type){
                             type2 = req.body.word_matches[wm_index].commands[command_index].command_type;
                             if(type2 === "text_message"){
                                 text_message = req.body.word_matches[wm_index].commands[command_index].text_message;
-                                sql += "('" + uuidv4() + "','" + req.projectData.project_id + "'," + wm_index + "," + SqlString.escape(upw) + "," + command_index + ",'" + type2 + "','" + text_message + "', null, null),"
+                                sql2 += "('" + uuidv4() + "','" + req.projectData.project_id + "'," + wm_index + ",'" + upw + "'," + command_index + ",'" + type2 + "','" + text_message + "', null, null),"
                             }
 
                             for(let block_property_index in req.body.word_matches[wm_index].commands[command_index].block_properties){
                                 block_property_element = JSON.stringify(req.body.word_matches[wm_index].commands[command_index].block_properties[block_property_index]);
-                                sql += "('" + uuidv4() + "','" + req.projectData.project_id + "'," + wm_index + "," + SqlString.escape(upw) + "," + command_index + ",'" + type2 + "', null," + block_property_index + "," + SqlString.escape(block_property_element) + "),";
+                                sql2 += "('" + uuidv4() + "','" + req.projectData.project_id + "'," + wm_index + ",'" + upw + "'," + command_index + ",'" + type2 + "', null," + block_property_index + ",'" + block_property_element + "'),";
                             }
                         }else{ //empty command
-                            sql += "('" + uuidv4() + "','" + req.projectData.project_id + "'," + wm_index + "," + SqlString.escape(upw) + "," + command_index + ", null, null, null, null),";
+                            sql2 += "('" + uuidv4() + "','" + req.projectData.project_id + "'," + wm_index + ",'" + upw + "'," + command_index + ", null, null, null, null),";
                         }
                     }
                 }else{
-                    sql += "('" + uuidv4() + "','" + req.projectData.project_id + "'," + wm_index + "," + SqlString.escape(upw) + ", 0, null, null, null, null),"
+                    sql2 += "('" + uuidv4() + "','" + req.projectData.project_id + "'," + wm_index + ",'" + upw + "', 0, null, null, null, null),"
                 }
-            } 
-            sql = sql.slice(0, sql.length - 1);
+            }
+            console.log(sql2);
+            sql2 = sql2.slice(0, sql2.length - 1);
             //console.log(sql2);
             // var query2 = db.query(sql2, (err2, results2) => {
             // }); //end of query2
-            await DBMain.query(sql,res);
+            await DBMain.query(sql2,res);
                 
-            var sqlSel = "SELECT * FROM Project_version WHERE version_id = '" + req.projectData.version_id + "'";
+            var sqlSel = "SELECT * FROM Project_version_dep WHERE version_id = '" + req.projectData.version_id + "'";
             // var querySel = db.query(sqlSel, (err, results) => {
             // }); 
             var results = await DBMain.query(sqlSel,res); 
@@ -88,13 +91,13 @@ router.post('/deploy', async (req, res) => {
             var queryPutVer;
             if(results.length){
                 var new_ver = parseInt(results[0].current_version) + 1;
-                sqlPutVer = "UPDATE Project_version SET current_version = '" + new_ver + "' WHERE version_id = '" + req.projectData.version_id + "'";
+                sqlPutVer = "UPDATE Project_version_dep SET current_version = '" + new_ver + "' WHERE version_id = '" + req.projectData.version_id + "'";
                 // queryPutVer = db.query(sqlPutVer, (errPutVer, resultsPutVer) => {
                 //     if(errPutVer) throw errPutVer;
                 // });
                 res.status(200).send({"success": true, "current_version": "" + new_ver});
             } else{
-                sqlPutVer = "INSERT INTO Project_version(version_id, current_version) VALUES('" + req.projectData.version_id + "','0')"
+                sqlPutVer = "INSERT INTO Project_version_dep(version_id, current_version) VALUES('" + req.projectData.version_id + "','0')"
                 // queryPutVer = db.query(sqlPutVer, (errPutVer, resultsPutVer) => {
                 //     if(errPutVer) throw errPutVer;
                 //     res.status(200).send({"success": true, "current_version": "0"});
@@ -103,7 +106,7 @@ router.post('/deploy', async (req, res) => {
             } 
             await DBMain.query(sqlPutVer,res); 
         } else{ 
-            var sqlSel = "SELECT * FROM Project_version WHERE version_id = '" + req.projectData.version_id + "'";
+            var sqlSel = "SELECT * FROM Project_version_dep WHERE version_id = '" + req.projectData.version_id + "'";
             // var querySel = db.query(sqlSel, (err, results) => {
             // }); 
             var results = await DBMain.query(sqlSel,res);
@@ -112,13 +115,13 @@ router.post('/deploy', async (req, res) => {
             var queryPutVer;
             if(results.length){
                 var new_ver = parseInt(results[0].current_version) + 1;
-                sqlPutVer = "UPDATE Project_version SET current_version = '" + new_ver + "' WHERE version_id = '" + req.projectData.version_id + "'";
+                sqlPutVer = "UPDATE Project_version_dep SET current_version = '" + new_ver + "' WHERE version_id = '" + req.projectData.version_id + "'";
                 // queryPutVer = db.query(sqlPutVer, (errPutVer, resultsPutVer) => {
                 // if(errPutVer) throw errPutVer;
                 // }); 
                 res.status(200).send({"success": true, "current_version": "" + new_ver});
             } else{
-                sqlPutVer = "INSERT INTO Project_version(version_id, current_version) VALUES('" + req.projectData.version_id + "','0')"
+                sqlPutVer = "INSERT INTO Project_version_dep(version_id, current_version) VALUES('" + req.projectData.version_id + "','0')"
                 // queryPutVer = db.query(sqlPutVer, (errPutVer, resultsPutVer) => {
                 // if(errPutVer) throw errPutVer;
                 // res.status(200).send({"success": true, "current_version": "0"});
@@ -139,7 +142,7 @@ router.get('/getallblocks',async (req,res)=>{
     try{
         var blocks = [];
         var wordmatches = [];
-        var sql = "SELECT * FROM chatbot_res WHERE project_id = '" + req.projectData.project_id + "' ORDER BY block_index, mini_block_index ASC"; 
+        var sql = "SELECT * FROM chatbot_res_dep WHERE project_id = '" + req.projectData.project_id + "' ORDER BY block_index, mini_block_index ASC"; 
         var results = await DBMain.query(sql,res); 
         var message;
         if(results.length){ 
@@ -157,7 +160,7 @@ router.get('/getallblocks',async (req,res)=>{
             } 
         } 
         
-        var sql = "SELECT * FROM word_matching WHERE project_id = '" + req.projectData.project_id + "' ORDER BY wm_index, command_index, block_property_index"
+        var sql = "SELECT * FROM word_matching_dep WHERE project_id = '" + req.projectData.project_id + "' ORDER BY wm_index, command_index, block_property_index"
         var user_possible_words; 
         var commands = [];
         var block_properties = [];

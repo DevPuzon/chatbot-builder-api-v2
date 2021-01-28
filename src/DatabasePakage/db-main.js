@@ -7,6 +7,7 @@ const
         user: config.user,
         password: config.password,
         database: config.database,
+        charset : 'utf8mb4',
         multipleStatements: true
     })
     
@@ -23,6 +24,7 @@ module.exports = class DBMain{
     }
 
     static query(sql,res){
+        console.log("=========================================================================================================");
         console.log(sql);
         return new Promise((resolve,reject)=>{ 
             db.query(sql, function (err, result) {

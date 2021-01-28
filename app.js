@@ -8,6 +8,7 @@ const express = require('express'),
     automation = require('./src/AutomationPackage/automation-main'),
     template = require('./src/TemplatePackage/template-main'),
     debug = require('./src/AutomationPackage/debug-automation'),
+    deploy = require('./src/AutomationPackage/deploy-automation'),
     fbpage = require('./src/FBPagePackage/fb-page-main'),
     backend = require('./src/BackendPackage/backend-main'),
     config = require('./config'),
@@ -31,17 +32,20 @@ if(cluster.isMaster){
         cluster.fork();
     });
 }else{
-    app.use(cors())
-    app.use(bodyParser.urlencoded({ extended: false })) 
-    app.use(bodyParser.json())
+    app.use(cors());
+    // app.use(bodyParser.urlencoded({ extended: false })) ;
+    // app.use(bodyParser.json());
+    app.use(bodyParser.json({limit: '50mb'}));
+    app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
     
     app.use('/user',user);
     app.use('/project',middlewareMain.isUserValid,project);
     app.use('/automation',middlewareMain.isUserValid,middlewareMain.onCheckProject,automation);
     app.use('/debug-automation',middlewareMain.isUserValid,middlewareMain.onCheckProject,debug);
+    app.use('/deploy-automation',middlewareMain.isUserValid,middlewareMain.onCheckProject,deploy);
     app.use('/template',middlewareMain.isUserValid,template);
     app.use('/fbpage',fbpage);
-    app.use('/backend', backend);
+    app.use('/backend', backend); 
     
     app.get('/', (req, res) => {
         res.send('Hello World!')
