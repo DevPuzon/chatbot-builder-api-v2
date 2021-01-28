@@ -38,7 +38,7 @@ router.post('/restaurant/contact-number',async (req,res)=>{
                 })
             }else{
                 //NO sender_pid
-                reserves[find_user].push({contactnumber :phs[0] +" "+ phs[1],sender_pid:b.sender_pid});
+                reserves.push({contactnumber :phs[0] +" "+ phs[1],sender_pid:b.sender_pid});
             }
             res.send({"sender_pid": b.sender_pid,"response_blocks":b.resolve_blocks,"extra_message":`Thank you for providing your contact number : ${phs[0] +" "+ phs[1]}`});
         }else{
@@ -62,7 +62,7 @@ router.post('/restaurant/number-of-guest',async (req,res)=>{
                 })
             }else{
                 //NO sender_pid
-                reserves[find_user].push({numberguest :numb,sender_pid:b.sender_pid});
+                reserves.push({numberguest :numb,sender_pid:b.sender_pid});
             }
             res.send({"sender_pid": b.sender_pid,"response_blocks":b.resolve_blocks,"extra_message":''});
         }else{
@@ -85,7 +85,7 @@ router.post('/restaurant/date-and-time',async (req,res)=>{
             })
         }else{
             //NO sender_pid
-            reserves[find_user].push({datetime :b.user_input,sender_pid:b.sender_pid});
+            reserves.push({datetime :b.user_input,sender_pid:b.sender_pid});
         } 
         res.send({"sender_pid": b.sender_pid,"response_blocks":b.resolve_blocks,"extra_message":`Great! Please confirm your booking:
         Reservation for {firstname}.
