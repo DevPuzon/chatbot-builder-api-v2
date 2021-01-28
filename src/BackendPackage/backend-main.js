@@ -2,14 +2,8 @@
 
 const 
     express = require('express') ,
-    router = express.Router() ,
-    middlewareMain = require('../MiddlewarePackage/middleware-main'),
-    DBMain = require('../DatabasePakage/db-main'),
-    { Validator } = require('node-input-validator'), 
-    config = require('../../config'),
-    { v4: uuidv4 } = require('uuid'), 
-    CryptoUtil = require('../UtilsPackage/crypt.util'),
-    HttpUtil = require('../UtilsPackage/http-util'),
+    router = express.Router() , 
+    DBMain = require('../DatabasePakage/db-main'), 
     SqlString = require('sqlstring'),
     nodemailer = require('nodemailer');
 
@@ -177,20 +171,6 @@ router.get('/get_token/:pageID', async (req, res) => {
     res.status(500).send({"error_message": err});
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // Get word matching (backend)
 router.get('/getwordmatch/:fb_page_id/:sender_pid/:message', async (req, res) => {
@@ -384,14 +364,5 @@ router.get('/livechatnotif/:pageID/:sender_pid', async (req, res) => {
     }
   //});
 });
-
-
-
-
-
-
-
-
-
 
 module.exports = router;
