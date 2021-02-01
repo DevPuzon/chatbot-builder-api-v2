@@ -30,7 +30,7 @@ module.exports = {
                 var sql = SqlString.format(`select user_id,role from chatbot_builder_v2.User_Tbl where user_id = ?  `,[user_id])
                 var _res = await DBMain.query(sql,res);
                 const data = _res[0]; 
-                const token = jwt.sign(data, config.jwt_key, { expiresIn: '15d'});  
+                const token = jwt.sign(data, config.jwt_key, { expiresIn: '1d'});  
                 resolve(token);
             }catch(err){ 
                 throw new Error(err);

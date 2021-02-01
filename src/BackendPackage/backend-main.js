@@ -322,11 +322,7 @@ router.get('/getwordmatch/:fb_page_id/:sender_pid/:message', async (req, res) =>
     console.log(err);
     res.status(500).send({"error_message":err});
   }
-});
-
-
-
-
+}); 
 
 
 // Get user firstname and lastname
@@ -341,12 +337,7 @@ router.get('/username', async (req, res) => {
     }
   //})
 
-});
-
-
-
-
-
+}); 
 
 
 // Live chat notif to admin
