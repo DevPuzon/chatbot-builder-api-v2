@@ -83,7 +83,7 @@ router.post('/email-login',async(req,res)=>{
     console.log(b.password);
     var sql = SqlString.format(`select user_id,password from chatbot_builder_v2.User_Tbl where email = ? and provider = 'email' or provider = 'email+facebook'`, [b.email]);
     const _res_count_acc = await DBMain.query(sql,res);
-    
+    console.log(_res_count_acc);
     if(_res_count_acc.length <= 0){ 
       res.status(401).send({error_message:"Email and password doesn't match."});
       return;
@@ -109,8 +109,7 @@ router.post('/fb-login',async(req,res)=>{
     Object.assign(b,{
       user_id:uuidv4()
     })
-    let user_id = b.user_id;
-    console.log(b);
+    let user_id = b.user_id; 
     var sql = SqlString.format(`select user_id from chatbot_builder_v2.User_Tbl where social_user_id =  ?`, [b.social_user_id]);
     var _res = await DBMain.query(sql,res);
     if(_res.length <= 0){

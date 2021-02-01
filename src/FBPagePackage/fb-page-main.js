@@ -33,18 +33,18 @@ router.post('/set-fb-token',middlewareMain.isUserValid,async (req,res)=>{
         
         var sql = SqlString.format(`delete  from chatbot_builder_v2.FB_Page where user_id = ?;`, [req.userData.user_id ]);
         for(let i = 0 ; i < b.length ;i ++){
-        let d = b[i];
-        Object.assign(d,{
-            user_id:req.userData.user_id
-        })
-        sql = sql + SqlString.format(`INSERT INTO chatbot_builder_v2.FB_Page SET ?;`, [d]); 
+            let d = b[i];
+            Object.assign(d,{
+                user_id:req.userData.user_id
+            })
+            sql = sql + SqlString.format(`INSERT INTO chatbot_builder_v2.FB_Page SET ?;`, [d]); 
         }
         await DBMain.query(sql,res);
 
         res.send({success:true});
     }catch(err){
         console.log(err)
-        res.status(500).send({error_message:"Something went wrong"});
+        // res.status(500).send({error_message:"Something went wrong"});
     }
 });
  

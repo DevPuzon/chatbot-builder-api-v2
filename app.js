@@ -33,9 +33,7 @@ if(cluster.isMaster){
         cluster.fork();
     });
 }else{
-    app.use(cors());
-    // app.use(bodyParser.urlencoded({ extended: false })) ;
-    // app.use(bodyParser.json());
+    app.use(cors()); 
     app.use(bodyParser.json({limit: '50mb'}));
     app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
     
@@ -47,8 +45,7 @@ if(cluster.isMaster){
     app.use('/template',middlewareMain.isUserValid,template);
     app.use('/fbpage',fbpage);
     app.use('/backend', backend); 
-    app.use('/template-api', template_api); 
-    
+    app.use('/template-api', template_api);  
     app.get('/', (req, res) => {
         res.send('Hello World!')
     }) 

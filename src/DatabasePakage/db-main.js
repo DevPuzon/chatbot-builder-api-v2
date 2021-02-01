@@ -29,11 +29,13 @@ module.exports = class DBMain{
         return new Promise((resolve,reject)=>{ 
             db.query(sql, function (err, result) {
                 if (err) {    
-                    res.status(500).send({error_message:"Something went wrong"});
-                    reject({});
+                    console.log(err.sqlMessage);
+                    res.status(500).send({error_message:"Something went wrong"});  
+                }else{ 
+                    const _res = JSON.parse(JSON.stringify(result)); 
+                    console.log("_res");
+                    resolve(_res);
                 }
-                const _res = JSON.parse(JSON.stringify(result)); 
-                resolve(_res);
             });
         })
     }

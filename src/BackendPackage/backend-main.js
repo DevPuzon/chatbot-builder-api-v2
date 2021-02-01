@@ -123,7 +123,7 @@ router.get('/getblock/:fb_page_id/:sender_pid', async (req, res) => {
     var result = await DBMain.query(sql,res);
 
     
-    var sqlBlocks = SqlString.format(`SELECT * FROM chatbot_res WHERE project_id = ? AND block_name = ? ORDER BY mini_block_index ASC`, [result[0].project_id, req.body.block_name]);
+    var sqlBlocks = SqlString.format(`SELECT * FROM chatbot_res_dep WHERE project_id = ? AND block_name = ? ORDER BY mini_block_index ASC`, [result[0].project_id, req.body.block_name]);
     var resultBlocks = await DBMain.query(sqlBlocks);
      console.log(resultBlocks);
     var message;
@@ -201,9 +201,9 @@ router.get('/getwordmatch/:fb_page_id/:sender_pid/:message', async (req, res) =>
   var sqlProj = SqlString.format(`SELECT project_id FROM Project WHERE fb_page_id = ?`, [req.params.fb_page_id]);
   var resultProj = await DBMain.query(sqlProj,res);
   if(resultProj.length){
-  var sql = "SELECT * FROM word_matching WHERE project_id = '" + resultProj[0].project_id + "' ORDER BY wm_index, command_index, block_property_index"
+  var sql = "SELECT * FROM word_matching_dep WHERE project_id = '" + resultProj[0].project_id + "' ORDER BY wm_index, command_index, block_property_index"
   //var result = await DBMain.query(sql,res);
-  //var sql = "SELECT * FROM word_matching WHERE clientID = " + req.params.pageID + " ORDER BY wm_index, command_index, block_property_index"
+  //var sql = "SELECT * FROM word_matching_dep WHERE clientID = " + req.params.pageID + " ORDER BY wm_index, command_index, block_property_index"
   var user_possible_words;
   var wm_array = [];
   var commands = [];
