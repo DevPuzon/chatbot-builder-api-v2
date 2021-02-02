@@ -69,7 +69,7 @@ module.exports = {
         req.userData = _res[0];
         next();
         } catch (err) {  
-            return res.status(401).send({error_message:"Unauthorized"});
+            return res.status(401).send({error_message:"Session expired"});
         }
     } ,
     isAdminValid: (req, res, next) => {

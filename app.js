@@ -10,6 +10,7 @@ const express = require('express'),
     debug = require('./src/AutomationPackage/debug-automation'),
     deploy = require('./src/AutomationPackage/deploy-automation'),
     fbpage = require('./src/FBPagePackage/fb-page-main'),
+    guest = require('./src/GuestPackage/guest-main'),
     backend = require('./src/BackendPackage/backend-main'),
     template_api = require('./src/BackendPackage/random-api-template'),
     config = require('./config'),
@@ -44,6 +45,7 @@ if(cluster.isMaster){
     app.use('/deploy-automation',middlewareMain.isUserValid,middlewareMain.onCheckProject,deploy);
     app.use('/template',middlewareMain.isUserValid,template);
     app.use('/fbpage',fbpage);
+    app.use('/guest',guest);
     app.use('/backend', backend); 
     app.use('/template-api', template_api);  
     app.get('/', (req, res) => {
